@@ -5,5 +5,5 @@ sudo gem install -y jekyll
 sudo apt-get install -y nodejs
 
 cd weekly-reports
-jekyll server --detach
+jekyll server --watch
 
