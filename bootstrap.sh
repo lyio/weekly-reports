@@ -4,6 +4,6 @@ sudo apt-get install -y ruby1.9.3
 sudo gem install -y jekyll
 sudo apt-get install -y nodejs
 
-cd weekly-reports
-jekyll server --watch
+cd /vagrant/weekly-reports
+jekyll server --watch --detach
 
