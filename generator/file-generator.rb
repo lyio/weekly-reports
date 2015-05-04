@@ -2,7 +2,7 @@ require_relative 'post.rb'
 
 class Generator
 	def initialize(week, dest = nil)
-		@destination = dest or "../weekly-reports/_posts/"
+		@destination = dest ? dest : "../weekly-reports/_posts/"
 		@week = week
 	end
 	
@@ -18,13 +18,12 @@ class Generator
 	end
 	
 	def generate_text(post)
-		"---
-		layout: post
-		title:  #{post.title}
-		date:   #{post.date}
-		categories: #{post.categories.join(' ')}
-		---
-		#{post.content}"
+		"---\n" +
+		"title:  #{post.title}\n" +
+		"date:   #{post.date}\n" +
+		"categories: #{post.categories.join(' ')}\n"+
+		"---\n" +
+		"#{post.content}\n"
 	end
 end
 
