@@ -24,7 +24,7 @@ class Generator
 		"---\n" +
 		"title:  #{post.title}\n" +
 		"date:   #{post.date}\n" +
-		"categories: #{post.categories.join(' ')}\n"+
+		"categories: #{@week}\n"+
 		"---\n" +
 		"#{post.content}\n"
 	end
