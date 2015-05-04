@@ -14,6 +14,12 @@ layout: default
         <h2>
           <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         </h2>
+        <div>Projects this week:</div>
+        <ul>
+          {% for p in post.projects %}
+          <li>{{ p }}</li>
+          {% endfor %}
+        </ul>
       </li>
     {% endfor %}
   </ul>

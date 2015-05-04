@@ -25,6 +25,7 @@ class Generator
 		"title:  #{post.title}\n" +
 		"date:   #{post.date}\n" +
 		"categories: #{@week}\n"+
+		"projects: #{post.categories}\n" +
 		"---\n" +
 		"#{post.content}\n"
 	end

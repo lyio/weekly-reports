@@ -18,6 +18,7 @@ class Weekly
 		@week = "week#{Date.parse('Sunday').strftime('%U')}"
 		# initialize post
 		projects = @repos.collect do |r| r.split('/').last end
+		puts "projects: #{projects}"
 		@post = Post.new(@week, projects, '')
 		@dropbox = c['dropbox']
 		@posts_directory = c['posts_directory']
