@@ -7,12 +7,15 @@ class Generator
 	end
 	
 	def write_post(post)
-			target = File.open(@destination + generate_filename(post), 'w')
+			file_name = @destination + generate_filename(post)
+			target = File.open(file_name, 'w')
 			target.write generate_text(post)
 			target.close
+			
+			file_name
 	end
 	
-	# :private
+	:private
 	def generate_filename(post)
 		"#{post.date.to_s}-#{@week}-#{post.title}.markdown"
 	end

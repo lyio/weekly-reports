@@ -1,5 +1,6 @@
 require 'date'
 require 'yaml'
+require 'fileutils.rb'
 require_relative 'post.rb'
 require_relative 'file-generator.rb'
 
@@ -18,6 +19,8 @@ class Weekly
 		# initialize post
 		projects = @repos.collect do |r| r.split('/').last end
 		@post = Post.new(@week, projects, '')
+		@dropbox = c['dropbox']
+		@posts_directory = c['posts_directory']
 	end
 	
 	def find_revisions(in_file)
@@ -102,8 +105,11 @@ class Weekly
 	end
 
 	def write_post
-		g = Generator.new(@week)
-		g.write_post @post
+		g = Generator.new(@week, @posts_directory)
+		puts "written post to: #{g.write_post @post}"
+		
+		# copy files over to dropbox for backup
+		FileUtils.cp_r(@posts_directory, @dropbox)
 	end 
 end
 
