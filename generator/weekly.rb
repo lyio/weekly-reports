@@ -80,7 +80,7 @@ class Weekly
 				puts "skipping #{skip}"
 				if r
 					# revision as headline
-					headline = "## #{l}" 
+					headline = "#####{l}" 
 					puts headline
 					target.write headline
 					@post.content.concat(headline)
