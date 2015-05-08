@@ -1,6 +1,6 @@
 require_relative 'post.rb'
 
-class Generator
+class PostGenerator
 	def initialize(week, dest = nil)
 		@destination = dest ? dest : "../weekly-reports/_posts/"
 		@week = week
@@ -22,6 +22,7 @@ class Generator
 	
 	def generate_text(post)
 		"---\n" +
+		"author: #{post.author}\n" +
 		"title:  #{post.title}\n" +
 		"date:   #{post.date}\n" +
 		"categories: #{@week}\n"+
