@@ -1,4 +1,5 @@
 user: t.fiedler
-repos: /cygdrive/c/Users/t.fiedler/VacationPlanner /cygdrive/d/IntranetOfficeModules
+repos: /cygdrive/c/Users/t.fiedler/VacationPlanner /cygdrive/d/IntranetOfficeModules /cygdrive/d/BRANCH_RESO_NH_2012
 dropbox: /cygdrive/c/Users/t.fiedler/Dropbox/weekly/
 posts_directory: '../weekly-reports/_posts/'
+bugzilla: https://devsrv1.wohnfinder.de/bugzilla/show_bug.cgi?id=
