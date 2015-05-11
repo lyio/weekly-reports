@@ -2,53 +2,34 @@ require 'date'
 require 'yaml'
 require 'fileutils.rb'
 require_relative 'post.rb'
-require_relative 'file-generator.rb'
+require_relative 'post-generator.rb'
 
 class Weekly
 	attr_accessor :repos
 	
-	def initialize
+	def initialize(user, c)
 		@pattern = /(r[0-9]+)(.+)([0-9]+)/
 		
 		# loading configuration
-		c = YAML.load_file('../config.yaml')
-		@user = c['user']
-		@repos = c['repos'].split(' ')
+		@user = user
+		@repos = c['repos']
 		
 		@week = "week#{Date.parse('Sunday').strftime('%U').to_i + 1}"
 		puts @week
 		# initialize post
-		projects = @repos.collect do |r| r.split('/').last end
+		projects = @repos.map do |r| 
+			r.split('/').last
+		end
+		
 		puts "projects: #{projects}"
-		@post = Post.new(@week, projects, '')
+		@post = Post.new(@week,	 [], '', @user)
 		@dropbox = c['dropbox']
 		@posts_directory = c['posts_directory']
 		@bugzilla_url = c['bugzilla']
 	end
 	
-	def find_revisions(in_file)
-		if not File.exist? in_file then return [] end
-		file = File.open(in_file, 'r')
-		revision_list = []
-		file.each do |line|
-			matches = is_revision? line
-			# adding revision to list
-			revision_list.push matches[1] if matches
-		end
-		file.close()
-		revision_list
-	end
-	
 	def is_revision? (line)
 		line.match(@pattern)
-	end
-	
-	def check_revision(line)
-		r = is_revision? line 
-		if r and @revisions.include? r[1]
-			r[3].to_i
-			else 0
-		end
 	end
 	
 	def get_lines(file)
@@ -62,11 +43,11 @@ class Weekly
 	def read_log(path_to_repo)
 		project_name = path_to_repo.split('/').last
 		# getting past revisions
-		target_path = "reports/#{@week}/#{project_name}.md"
+		target_path = "reports/#{@user}/#{@week}/#{project_name}.md"
 	
 		date = Date.parse("Sunday").strftime("%Y-%m-%d")
 		svn_cmd = "svn log #{path_to_repo} -v -r{#{date}}:HEAD --search #{@user} | grep - > weekly"
-	
+		puts svn_cmd
 		r = %x[#{svn_cmd}]
 		
 		lines = get_lines(File.open('weekly'))
@@ -91,26 +72,39 @@ class Weekly
 		
 		text.concat "\n"
 		@post.content.concat text
-		Dir.mkdir("reports/#{@week}") unless File.exists?("reports/#{@week}")
-		File.write(target_path, text)
+		Dir.mkdir("reports/#{@user}") unless File.exists?("reports/#{@user}")
+		Dir.mkdir("reports/#{@user}/#{@week}") unless File.exists?("reports/#{@user}/#{@week}")
+		
+		# only write a file and add project to Jekyll post if there actually were commits that week
+		unless text.length <= 1
+			File.write(target_path, text)
+			@post.projects.push project_name
+		end 
 	end
 
 	def write_post
-		g = Generator.new(@week, @posts_directory)
+		g = PostGenerator.new(@week, @posts_directory)
 		puts "written post to: #{g.write_post @post}"
 		
 		# copy files over to dropbox for backup
-		FileUtils.cp_r(@posts_directory, @dropbox)
+		FileUtils.cp_r(@posts_directory, @dropbox) if @dropbox
 	end 
 end
 
-weekly = Weekly.new
 
-puts "processing svn repos:", weekly.repos
-weekly.repos.each do |repo| weekly.read_log(repo) end
+# loading in configuration file to get users and repos for each
+c = YAML.load_file('../config.yaml')
+c.each do |conf|
+	weekly = Weekly.new(conf['users'], conf)
+	puts "#{conf['users']} --> processing svn repos:", weekly.repos
+	weekly.repos.each do |repo| weekly.read_log(repo) end
+	
+	#generate the jekyll post files
+	weekly.write_post if conf['users'] === 't.fiedler'
+end
 
-#generate the jekyll post files
-weekly.write_post
+
+
 
 
 
