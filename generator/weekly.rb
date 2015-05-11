@@ -17,29 +17,15 @@ class Weekly
 		@week = "week#{Date.parse('Sunday').strftime('%U').to_i + 1}"
 		puts @week
 		# initialize post
-		projects = @repos.each do |r| 
-			puts r
-			r.split('/').last 
+		projects = @repos.map do |r| 
+			r.split('/').last
 		end
 		
 		puts "projects: #{projects}"
-		@post = Post.new(@week, projects, '', @user)
+		@post = Post.new(@week,	 [], '', @user)
 		@dropbox = c['dropbox']
 		@posts_directory = c['posts_directory']
 		@bugzilla_url = c['bugzilla']
-	end
-	
-	def find_revisions(in_file)
-		if not File.exist? in_file then return [] end
-		file = File.open(in_file, 'r')
-		revision_list = []
-		file.each do |line|
-			matches = is_revision? line
-			# adding revision to list
-			revision_list.push matches[1] if matches
-		end
-		file.close()
-		revision_list
 	end
 	
 	def is_revision? (line)
@@ -88,7 +74,12 @@ class Weekly
 		@post.content.concat text
 		Dir.mkdir("reports/#{@user}") unless File.exists?("reports/#{@user}")
 		Dir.mkdir("reports/#{@user}/#{@week}") unless File.exists?("reports/#{@user}/#{@week}")
-		File.write(target_path, text)
+		
+		# only write a file and add project to Jekyll post if there actually were commits that week
+		unless text.length <= 1
+			File.write(target_path, text)
+			@post.projects.push project_name
+		end 
 	end
 
 	def write_post
@@ -101,6 +92,7 @@ class Weekly
 end
 
 
+# loading in configuration file to get users and repos for each
 c = YAML.load_file('../config.yaml')
 c.each do |conf|
 	weekly = Weekly.new(conf['users'], conf)
