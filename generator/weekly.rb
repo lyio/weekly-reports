@@ -78,7 +78,7 @@ class Weekly
 		# only write a file and add project to Jekyll post if there actually were commits that week
 		unless text.length <= 1
 			File.write(target_path, text)
-			@post.projects.push project_name
+			@post.categories.push project_name
 		end 
 	end
 
