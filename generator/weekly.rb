@@ -3,72 +3,36 @@ require 'yaml'
 require 'fileutils.rb'
 require_relative 'post.rb'
 require_relative 'post-generator.rb'
+require_relative 'log-reader.rb'
 
 class Weekly
-	attr_accessor :repos
-	
+
 	def initialize(user, c)
 		@pattern = /(r[0-9]+)(.+)([0-9]+)/
 		
 		# loading configuration
-		@user = user
-		@repos = c['repos']
-		
+		@user = user	
 		@week = "week#{Date.parse('Sunday').strftime('%U').to_i + 1}"
 		puts @week
-		# initialize post
-		projects = @repos.map do |r| 
-			r.split('/').last
-		end
 		
-		puts "projects: #{projects}"
+		# initialize post
 		@post = Post.new(@week,	 [], '', @user)
-		@dropbox = c['dropbox']
-		@posts_directory = c['posts_directory']
-		@bugzilla_url = c['bugzilla']
+		@dropbox = c[:dropbox]
+		@posts_directory = c[:posts_directory]
+		@bugzilla_url = c[:bugzilla]
 	end
 	
 	def is_revision? (line)
 		line.match(@pattern)
 	end
 	
-	def get_lines(file)
-		lines = []
-		file.each do |l|
-			lines.push l if not l.start_with? '---' end
-		file.close
-		lines
-	end
-
-	def read_log(path_to_repo)
+	def read_log(path_to_repo, reader)
 		project_name = path_to_repo.split('/').last
-		# getting past revisions
 		target_path = "reports/#{@user}/#{@week}/#{project_name}.md"
 	
 		date = Date.parse("Sunday").strftime("%Y-%m-%d")
-		svn_cmd = "svn log #{path_to_repo} -v -r{#{date}}:HEAD --search #{@user} | grep - > weekly"
-		puts svn_cmd
-		r = %x[#{svn_cmd}]
 		
-		lines = get_lines(File.open('weekly'))
-		@post.content.concat "##{project_name}\n" unless lines.empty?
-		text = ''
-		lines.each do |l|
-			r = is_revision? l
-			if r
-				# revision as headline
-				headline = "\n#####SVN Revision: #{l.split('|')[0]}\n" 
-				puts headline
-				text.concat(headline)
-			elsif l.start_with? 'Bug'
-				bug = l.gsub(/(Bug )([0-9]+)/, "[" + '\0'+ "]" + "(#{@bugzilla_url}" + '\2' + ")").concat "\n"		
-				puts bug	
-				text.concat(bug)
-			else 
-				puts l
-				text.concat l
-				end
-			end	 
+		text = reader.read_log(date, path_to_repo)
 		
 		text.concat "\n"
 		@post.content.concat text
@@ -94,19 +58,28 @@ end
 
 # loading in configuration file to get users and repos for each
 c = YAML.load_file('../config.yaml')
-c.each do |conf|
-	weekly = Weekly.new(conf['users'], conf)
-	puts "#{conf['users']} --> processing svn repos:", weekly.repos
-	weekly.repos.each do |repo| weekly.read_log(repo) end
+
+# create a real hash from yaml hash
+conf = {
+		:dropbox => c['dropbox'],
+		:posts_directory => c['posts_directory'],
+		:bugzilla => c['bugzilla']
+		}
+
+# iterate over users in config
+c['users'].each do |user| 
+	svn_repos = c['repos']['svn']
+	git_repos = c['repos']['git']
 	
-	#generate the jekyll post files
-	weekly.write_post if conf['users'] === 't.fiedler'
+	weekly = Weekly.new(user, conf)
+	puts "#{user} --> processing svn repos: ", svn_repos
+	svn_reader = SvnLogReader.new user
+	svn_repos.each do |repo| weekly.read_log(repo, svn_reader) end
+	
+	puts "#{user} --> processing git repos:", git_repos
+	git_reader = GitLogReader.new user
+	git_repos.each do |repo| weekly.read_log(repo, git_reader) end
 end
-
-
-
-
-
-
-
-
+	
+#generate the jekyll post files
+weekly.write_post if conf['users'] === 't.fiedler'
