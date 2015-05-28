@@ -1,11 +1,4 @@
-require 'git'
-
-class LogReader
-
-	def initialize(author)
-		@author = author
-	end
-end
+require_relative 'log-reader.rb'
 
 class SvnLogReader < LogReader
 
@@ -43,12 +36,5 @@ class SvnLogReader < LogReader
 			lines.push l if not l.start_with? '---' end
 		file.close
 		lines
-	end
-end
-
-class GitLogReader < LogReader
-
-	def read_log(date, path)
-		""
 	end
 end

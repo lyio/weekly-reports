@@ -3,7 +3,8 @@ require 'yaml'
 require 'fileutils.rb'
 require_relative 'post.rb'
 require_relative 'post-generator.rb'
-require_relative 'log-reader.rb'
+require_relative 'log-readers/svn-log-reader.rb'
+require_relative 'log-readers/git-log-reader.rb'
 
 class Weekly
 
