@@ -33,6 +33,7 @@ class SvnLogReader < LogReader
 				text.concat l
 				end
 			end
+		text
 	end
 
 	:private
@@ -48,6 +49,6 @@ end
 class GitLogReader < LogReader
 
 	def read_log(date, path)
-
+		""
 	end
 end
