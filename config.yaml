@@ -1,14 +1,15 @@
 --- 
-  bugzilla: "https://example.com/?bug="
-  dropbox: /optional_path/to/backup_folder
+  bugzilla: "https://devsrv1.wohnfinder.de/bugzilla/show_bug.cgi?id="
+  dropbox: c:/Users/t.fiedler/Dropbox/weekly/
   posts_directory: ../weekly-reports/_posts/
-  repos:
-    svn: 
-      - 'svn://foo.bar/project1' 
-      - 'svn://foo.bar/project2'
-      - 'local/path/to/svn_repo'
+  repos: 
+    svn:
+      - 'svn://devsrv1/Fiomarket/IntranetOffice/IntranetOfficeFileManager' 
+      - 'svn://devsrv1/Common/VacationPlanner'
+      - 'svn://devsrv1/Fiomarket/Rechnungssoftware/Rechnungssoftware/branches/BRANCH_ReSo_NH_2012' 
+      - 'svn://devsrv1/Fiomarket/IntranetOffice/IntranetOfficeModules'
     git:
-      - 'local/path/to/git_repo'
+      - c:/Users/t.fiedler/test/conversion-tools
+      - c:/Users/t.fiedler/gitlab-ci-deploy/scripts
   users: 
-      - 'svn.user1'
-      - 'svn.user2'
+      - t.fiedler

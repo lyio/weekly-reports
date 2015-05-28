@@ -1,0 +1,14 @@
+--- 
+  bugzilla: "https://example.com/?bug="
+  dropbox: /optional_path/to/backup_folder
+  posts_directory: ../weekly-reports/_posts/
+  repos:
+    svn: 
+      - 'svn://foo.bar/project1' 
+      - 'svn://foo.bar/project2'
+      - 'local/path/to/svn_repo'
+    git:
+      - 'local/path/to/git_repo'
+  users: 
+      - 'svn.user1'
+      - 'svn.user2'
