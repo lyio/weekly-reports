@@ -23,7 +23,7 @@ The reports can be found in /{username}/{weekXX}/{project}. When no commits are 
 To get Jekyll up it is easiest to use the supplied VagrantFile. Simply install [Vagrant](https://www.vagrantup.com/downloads.html) and [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and run
 
 ```
-    vagrant up
+    vagrant up --provision
 ```
 in the root directory. The Vagrant box comes with port forwarding and automatically starts up the Jekyll server. The server is 
 available under *localhost:9000*. For some reason the Jekyll autorebuild feature doesn't seem to work within the Vagrant VM so after changes you have to ssh into the machine (```vagrant ssh```) and cd into */vagrant/weekly-reports* and run ```jekyll build```.
