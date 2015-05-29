@@ -1,14 +1,14 @@
 require_relative 'log-reader.rb'
 
 class SvnLogReader < LogReader
-
-	def read_log(date, path)
-    	svn_cmd = "svn log #{path} -v -r{#{date}}:HEAD --search #{@author} | grep - > weekly"
+	
+	def read_log(date, path, options = {}) 	
+		svn_cmd = "svn log #{path} -v -r{#{date}}:HEAD --search #{@author} | grep - > weekly"
     	puts svn_cmd 
     	r = %x[#{svn_cmd}]
 
 		lines = get_lines(File.open('weekly'))
-		@post.content.concat "##{project_name}\n" unless lines.empty?
+		
 		text = ''
 		lines.each do |l|
 			r = is_revision? l
@@ -18,7 +18,7 @@ class SvnLogReader < LogReader
 				puts headline
 				text.concat headline
 			elsif l.start_with? 'Bug'
-				bug = l.gsub(/(Bug )([0-9]+)/, "[" + '\0'+ "]" + "(#{@bugzilla_url}" + '\2' + ")").concat "\n"
+				bug = l.gsub(/(Bug )([0-9]+)/, "[" + '\0'+ "]" + "(#{options[:bugzilla_url]}" + '\2' + ")").concat "\n"
 				puts bug
 				text.concat(bug)
 			else
@@ -36,5 +36,9 @@ class SvnLogReader < LogReader
 			lines.push l if not l.start_with? '---' end
 		file.close
 		lines
+	end
+	
+	def is_revision? (line)
+		line.match(/(r[0-9]+)(.+)([0-9]+)/)
 	end
 end

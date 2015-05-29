@@ -9,22 +9,15 @@ require_relative 'log-readers/git-log-reader.rb'
 class Weekly
 
 	def initialize(user, c)
-		@pattern = /(r[0-9]+)(.+)([0-9]+)/
-		
 		# loading configuration
 		@user = user	
 		@week = "week#{Date.parse('Sunday').strftime('%U').to_i + 1}"
-		puts @week
-		
+				
 		# initialize post
 		@post = Post.new(@week,	 [], '', @user)
 		@dropbox = c[:dropbox]
 		@posts_directory = c[:posts_directory]
 		@bugzilla_url = c[:bugzilla]
-	end
-	
-	def is_revision? (line)
-		line.match(@pattern)
 	end
 	
 	def read_log(path_to_repo, reader)
@@ -33,8 +26,9 @@ class Weekly
 	
 		date = Date.parse("Sunday").strftime("%Y-%m-%d")
 		
-		text = reader.read_log(date, path_to_repo)
+		text = reader.read_log(date, path_to_repo, :bugzilla_url => @bugzilla_url)
 		
+		@post.content.concat "##{project_name}\n" unless text.length < 2
 		text.concat "\n"
 		@post.content.concat text
 		Dir.mkdir("reports/#{@user}") unless File.exists?("reports/#{@user}")
@@ -80,7 +74,9 @@ c['users'].each do |user|
 	puts "#{user} --> processing git repos:", git_repos
 	git_reader = GitLogReader.new user
 	git_repos.each do |repo| weekly.read_log(repo, git_reader) end
+	
+	#generate the jekyll post files
+	weekly.write_post if user === 't.fiedler'
 end
 	
-#generate the jekyll post files
-weekly.write_post if conf['users'] === 't.fiedler'
+
