@@ -9,6 +9,3 @@
       - 'local/path/to/svn_repo'
     git:
       - 'local/path/to/git_repo'
-  users: 
-      - 'svn.user1'
-      - 'svn.user2'
