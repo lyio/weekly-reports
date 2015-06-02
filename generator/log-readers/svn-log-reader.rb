@@ -3,7 +3,8 @@ require_relative 'log-reader.rb'
 class SvnLogReader < LogReader
 	
 	def read_log(date, path, options = {}) 	
-		svn_cmd = "svn log #{path} -v -r{#{date}}:HEAD --search #{@author} | grep - > weekly"
+		search = "--search #{@author}" if @author
+		svn_cmd = "svn log #{path} -v -r{#{date}}:HEAD #{search} | grep - > weekly"
     	puts svn_cmd 
     	r = %x[#{svn_cmd}]
 

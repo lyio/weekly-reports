@@ -10,11 +10,10 @@ class Weekly
 
 	def initialize(user, c)
 		# loading configuration
-		@user = user	
+		@user = user
 		@week = "week#{Date.parse('Sunday').strftime('%U').to_i + 1}"
 				
-		# initialize post
-		@post = Post.new(@week,	 [], '', @user)
+		
 		@dropbox = c[:dropbox]
 		@posts_directory = c[:posts_directory]
 		@bugzilla_url = c[:bugzilla]
@@ -22,7 +21,11 @@ class Weekly
 	
 	def read_log(path_to_repo, reader)
 		project_name = path_to_repo.split('/').last
-		target_path = "reports/#{@user}/#{@week}/#{project_name}.md"
+		
+		# initialize post
+		@post = Post.new(@week,	 [], '', @user)
+		
+		target_path = "reports/#{project_name}/#{@week}.md"
 	
 		date = Date.parse("Sunday").strftime("%Y-%m-%d")
 		
@@ -31,13 +34,13 @@ class Weekly
 		@post.content.concat "##{project_name}\n" unless text.length < 2
 		text.concat "\n"
 		@post.content.concat text
-		Dir.mkdir("reports/#{@user}") unless File.exists?("reports/#{@user}")
-		Dir.mkdir("reports/#{@user}/#{@week}") unless File.exists?("reports/#{@user}/#{@week}")
-		
+		Dir.mkdir("reports/#{project_name}") unless File.exists?("reports/#{project_name}")
+	
 		# only write a file and add project to Jekyll post if there actually were commits that week
 		unless text.length <= 1
 			File.write(target_path, text)
 			@post.categories.push project_name
+			write_post
 		end 
 	end
 
@@ -51,6 +54,8 @@ class Weekly
 end
 
 
+user = ARGV.shift
+
 # loading in configuration file to get users and repos for each
 c = YAML.load_file('../config.yaml')
 
@@ -62,21 +67,14 @@ conf = {
 		}
 
 # iterate over users in config
-c['users'].each do |user| 
-	svn_repos = c['repos']['svn']
-	git_repos = c['repos']['git']
-	
-	weekly = Weekly.new(user, conf)
-	puts "#{user} --> processing svn repos: ", svn_repos
-	svn_reader = SvnLogReader.new user
-	svn_repos.each do |repo| weekly.read_log(repo, svn_reader) end
-	
-	puts "#{user} --> processing git repos:", git_repos
-	git_reader = GitLogReader.new user
-	git_repos.each do |repo| weekly.read_log(repo, git_reader) end
-	
-	#generate the jekyll post files
-	weekly.write_post if user === 't.fiedler'
-end
-	
+svn_repos = c['repos']['svn']
+git_repos = c['repos']['git']
 
+weekly = Weekly.new(user, conf)
+puts "#{user} --> processing svn repos: ", svn_repos
+svn_reader = SvnLogReader.new user
+svn_repos.each do |repo| weekly.read_log(repo, svn_reader) end
+	
+puts "#{user} --> processing git repos:", git_repos
+git_reader = GitLogReader.new user
+git_repos.each do |repo| weekly.read_log(repo, git_reader) end

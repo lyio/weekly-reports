@@ -1,6 +1,6 @@
 class LogReader
 
-	def initialize(author)
+	def initialize(author = nil)
 		@author = author
 	end
 end

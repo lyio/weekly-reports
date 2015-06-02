@@ -11,7 +11,7 @@ class GitLogReader < LogReader
 		repo.fetch
 		
 		# getting the commits
-		commits = repo.log.since("#{date}").author("#{@author}")
+		commits = @author ? repo.log.since("#{date}").author("#{@author}") : repo.log.since("#{date}")
 		
 		text = ''
 		commits.each do |commit|
