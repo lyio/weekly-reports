@@ -6,22 +6,18 @@ title: Projects
 <div class="home">
 
   <h1 class="page-heading">Projects</h1>
-
-  <ul>
-  {% for category in site.categories %}
-       {% unless category.first contains 'week' %}
-       <li>   
-          <a class="page-link" href="#{{ category | first }}"> {{ category | first }} </a>
-       </li>          
-       {% endunless %}
-  {% endfor %}
-  </ul>
   <ul class="post-list">  
     {% for category in site.categories %}
       {% unless category.first contains 'week' %}
+      <li class="post_preview">       
       <a id="{{ category | first }}"></a>
-      <li class="post_preview">
-        {{ category }}
+        <h2>{{ category | first | capitalize}}</h2>
+        {% for post in site.posts %}
+          {% if post.categories contains category.first %}
+          <h3><a href="{{post.url | prepend: site.baseurl }}">{{ post.title }}</a></h3>
+          {{ post.excerpt  | truncatewords: 10 }}
+          {% endif %}
+        {% endfor %}
       </li>
       {% endunless %}
     {% endfor %}
