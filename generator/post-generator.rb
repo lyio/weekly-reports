@@ -17,7 +17,7 @@ class PostGenerator
 	
 	:private
 	def generate_filename(post)
-		"#{post.date.to_s}-#{@week}-#{post.title}.markdown"
+		"#{post.date.to_s}-#{post.title}-#{post.categories[0]}.markdown"
 	end
 	
 	def generate_text(post)
@@ -25,7 +25,7 @@ class PostGenerator
 		"author: #{post.author}\n" +
 		"title:  #{post.title}\n" +
 		"date:   #{post.date}\n" +
-		"categories: #{@week}\n"+
+		"categories: #{post.categories}\n"+
 		"projects: #{post.categories}\n" +
 		"---\n" +
 		"#{post.content}\n"

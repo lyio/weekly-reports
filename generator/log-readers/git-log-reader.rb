@@ -11,7 +11,7 @@ class GitLogReader < LogReader
 		repo.fetch
 		
 		# getting the commits
-		commits = repo.log.since("#{date}").author("#{@author}")
+		commits = @author ? repo.log.since("#{date}").author("#{@author}") : repo.log.since("#{date}")
 		
 		text = ''
 		commits.each do |commit|
@@ -32,6 +32,7 @@ class GitLogReader < LogReader
 			
 			# adding the rest of the message
 			text.concat commit.message.gsub('#', '\\#')
+			text.concat " \n"
 		end
 		
 		text
