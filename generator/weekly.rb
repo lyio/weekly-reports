@@ -31,7 +31,7 @@ class Weekly
 		
 		text = reader.read_log(date, path_to_repo, :bugzilla_url => @bugzilla_url)
 		
-		@post.content.concat "##{project_name}\n" unless text.length < 2
+		# @post.content.concat "##{project_name}\n" unless text.length < 2
 		text.concat "\n"
 		@post.content.concat text
 		Dir.mkdir("reports/#{project_name}") unless File.exists?("reports/#{project_name}")

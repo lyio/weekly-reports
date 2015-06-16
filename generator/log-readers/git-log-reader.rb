@@ -32,6 +32,7 @@ class GitLogReader < LogReader
 			
 			# adding the rest of the message
 			text.concat commit.message.gsub('#', '\\#')
+			text.concat " \n"
 		end
 		
 		text
