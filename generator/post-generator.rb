@@ -7,7 +7,8 @@ class PostGenerator
 	end
 	
 	def write_post(post)
-			file_name = @destination + generate_filename(post)
+			Dir.mkdir @destination + "#{post.categories[0]}/" unless File.exist?(@destination + "#{post.categories[0]}/")
+			file_name = @destination + "#{post.categories[0]}/" + generate_filename(post)
 			target = File.open(file_name, 'w')
 			target.write generate_text(post)
 			target.close

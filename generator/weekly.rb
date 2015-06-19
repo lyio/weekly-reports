@@ -13,7 +13,6 @@ class Weekly
 		@user = user
 		@week = "week#{Date.parse('Sunday').strftime('%U').to_i + 1}"
 				
-		
 		@dropbox = c[:dropbox]
 		@posts_directory = c[:posts_directory]
 		@bugzilla_url = c[:bugzilla]
@@ -31,7 +30,6 @@ class Weekly
 		
 		text = reader.read_log(date, path_to_repo, :bugzilla_url => @bugzilla_url)
 		
-		# @post.content.concat "##{project_name}\n" unless text.length < 2
 		text.concat "\n"
 		@post.content.concat text
 		Dir.mkdir("reports/#{project_name}") unless File.exists?("reports/#{project_name}")

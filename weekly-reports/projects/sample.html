@@ -1,0 +1,19 @@
+---
+layout: default
+title: sample
+---
+
+<div class="home">
+
+  <h1 class="page-heading">{{ page.title | capitalize }}</h1>
+  <ul class="post-list">  
+      <li class="post_preview">       
+        {% for post in site.categories.sample %}        
+          <h3><a href="{{post.url | prepend: site.baseurl }}">{{ post.title }}</a></h3>
+          {{ post.excerpt  | truncatewords: 10 }}
+        {% endfor %}
+      </li>
+  </ul>
+
+  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+</div>
