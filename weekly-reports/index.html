@@ -10,7 +10,7 @@ layout: default
     {% for category in site.categories %}
       <li class="post_preview">
         <h2>
-          <a class="post-link" href="projects/index.html#{{ category[0] }}">{{ category | first | capitalize }}</a>
+          <a class="post-link" href="projects/{{ category[0] }}.html">{{ category | first | capitalize }}</a>
         </h2>      
       </li>
     {% endfor %}
