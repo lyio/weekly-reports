@@ -4,17 +4,21 @@ layout: default
 
 <div class="home">
 
-  <h1 class="page-heading">Posts</h1>
-
-  <ul class="post-list">
+  <div class="mdl-grid">
     {% for category in site.categories %}
-      <li class="post_preview">
-        <h2>
-          <a class="post-link" href="projects/{{ category[0] }}.html">{{ category | first | capitalize }}</a>
-        </h2>      
-      </li>
+    <div class="mdl-cell mdl-cell--6-col">
+        <div class="mdl-card mdl-shadow--4dp">
+          <div class="fio-project-card-header mdl-card__title">{{ category | first | capitalize }}</div>
+          <div class="mdl-card__supporting-text">
+            Some text saying something about the project. Search me, where to get this dynamically.
+          </div>
+          <div class="fio-project-card-actions mdl-card__actions mdl-card--border">
+              <a class="mdl-button mdl-js-button mdl-button--colored mdl-js-ripple-effect" href="projects/{{ category[0] }}.html">Einträge ansehen </a>
+          </div>
+        </div>
+    </div>
     {% endfor %}
-  </ul>
+  </div>
 
   <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
 

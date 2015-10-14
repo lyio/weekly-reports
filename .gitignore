@@ -1,6 +1,8 @@
 *~
  _site
 .vagrant
-*/reports
+/reports/
 weekly
 /weekly-reports/_posts
+/weekly-reports/projects
+.sass-cache

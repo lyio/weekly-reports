@@ -7,9 +7,11 @@ class PostGenerator
 	end
 	
 	def write_post(post)
+			$stdout.puts @destination
+			
 			Dir.mkdir @destination + "#{post.categories[0]}/" unless File.exist?(@destination + "#{post.categories[0]}/")
 			file_name = @destination + "#{post.categories[0]}/" + generate_filename(post)
-			target = File.open(file_name, 'w')
+			target = File.open(file_name, 'a')
 			target.write generate_text(post)
 			target.close
 			
@@ -32,10 +34,3 @@ class PostGenerator
 		"#{post.content}\n"
 	end
 end
-
-## intended usage
-#g = Generator.new("../weekly-reports/_posts/", "week19")
-#p = Post.new("test", ["test", "foo", "bar"], "##Test thingy")
-#puts g, p, g.generate_filename(p), g.generate_text(p)
-
-#g.write_post p

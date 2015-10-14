@@ -4,20 +4,24 @@ title: Projects
 ---
 
 <div class="home">
-
-  <h1 class="page-heading">Projects</h1>
-  <ul class="post-list">  
+  <ul class="post-list">
     {% for category in site.categories %}
       {% unless category.first contains 'week' %}
-      <li class="post_preview">       
-      <a id="{{ category | first }}"></a>
-        <h2>{{ category | first | capitalize}}</h2>
-        {% for post in site.posts %}
-          {% if post.categories contains category.first %}
-          <h3><a href="{{post.url | prepend: site.baseurl }}">{{ post.title }}</a></h3>
-          {{ post.excerpt  | truncatewords: 10 }}
-          {% endif %}
-        {% endfor %}
+      <li>
+        <a id="{{ category | first }}"></a>
+        <div class="mdl-cell mdl-cell--8-col">
+          <div class="mdl-card mdl-shadow--4dp">
+            <div class="fio-project-card-header mdl-card__title">{{ category | first | capitalize }}</div>
+            <div class="mdl-card__supporting-text">
+              {% for post in site.posts %}
+                {% if post.categories contains category.first %}
+                  <a href="{{post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                  {{ post.excerpt  | truncatewords: 10 }}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
       </li>
       {% endunless %}
     {% endfor %}

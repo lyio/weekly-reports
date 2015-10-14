@@ -1,1 +1,0 @@
-ruby weekly.rb
