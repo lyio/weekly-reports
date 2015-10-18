@@ -1,5 +1,3 @@
-require_relative 'log-reader.rb'
-
 class GitLogReader
  
 	def read_commits(commits)

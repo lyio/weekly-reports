@@ -3,10 +3,9 @@ require 'json'
 require 'fileutils'
 require_relative '../generator/log-readers/git-log-reader.rb'
 require_relative '../generator/weekly.rb'
+require 'sinatra/reloader' if development?
 
 set :public_folder, File.dirname(__FILE__) + '/../weekly-reports/_site'
-set :port, 4000
-set :bind, '0.0.0.0'
 
 # create a real hash from yaml hash
 conf = {	
@@ -21,7 +20,7 @@ post '/gitlab/push' do
 	params = JSON.parse(request.env["rack.input"].read)
 	if params['object_kind'] == 'push' && params['ref'] == "refs/heads/master"
 		commits = params['commits'].select do |c|
-			c.message.match /Merge branch . into ‘master’/
+			c['message'].match /Merge branch .+ into 'master'/
 		end
 		
 		
@@ -40,5 +39,3 @@ post '/gitlab/push' do
 		`jekyll build -s ../weekly-reports -d ../weekly-reports/_site`
 	end
 end
-
-

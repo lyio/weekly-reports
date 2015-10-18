@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+gem 'jekyll'
+gem 'sinatra'
+gem 'sinatra-contrib'
+gem 'puma'
+gem 'rspec'
