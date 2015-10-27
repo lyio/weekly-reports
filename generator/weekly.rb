@@ -21,13 +21,13 @@ class Weekly
 		# initialize post
 		@post = Post.new(@week,	 [], '', @user)
 		
-		target_path = "../reports/#{project_name}/#{@week}.md"
+		target_path = "reports/#{project_name}/#{@week}.md"
 	
 		text = reader.read_commits(@commits)
 		
 		text.concat "\n"
 		@post.content.concat text
-		Dir.mkdir("../reports/#{project_name}") unless File.exists?("../reports/#{project_name}")
+		Dir.mkdir("reports/#{project_name}") unless File.exists?("reports/#{project_name}")
 	
 		# only write a file and add project to Jekyll post if there actually were commits that week
 		unless text.length <= 1

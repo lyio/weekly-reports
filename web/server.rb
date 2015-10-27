@@ -18,24 +18,27 @@ end
 
 post '/gitlab/push' do
 	params = JSON.parse(request.env["rack.input"].read)
+	File.open(File.dirname(__FILE__) + "hooklog.txt", 'a') do |file|
+		file.write params
+	end 
+	
 	if params['object_kind'] == 'push' && params['ref'] == "refs/heads/master"
 		commits = params['commits'].select do |c|
 			c['message'].match /Merge branch .+ into 'master'/
 		end
-		
 		
 		# building the posts for the merged commits
 		weekly = Weekly.new(commits[0]['timestamp'], conf, commits)
 		weekly.read_log(params['repository'], GitLogReader.new)
 		
 		# creating an index file for the project if none exists
-		filename = "../weekly-reports/projects/#{params['repository']['name']}.html"
+		filename = "weekly-reports/projects/#{params['repository']['name']}.html"
 		unless File.exist? filename
-			file = File.read("../weekly-reports/projects/sample.html").gsub('sample', params['repository']['name'])
-			File.write("../weekly-reports/projects/#{params['repository']['name']}.html", file)
+			file = File.read("weekly-reports/projects/sample.html").gsub('sample', params['repository']['name'])
+			File.write("weekly-reports/projects/#{params['repository']['name']}.html", file)
 		end
 		
 		# instructing jekyll to rebuild the site
-		`jekyll build -s ../weekly-reports -d ../weekly-reports/_site`
+		`jekyll build -s weekly-reports -d weekly-reports/_site`
 	end
 end
